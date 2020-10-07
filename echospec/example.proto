@@ -1,0 +1,21 @@
+// 這邊使用 proto3 格式，也就是protobuf 第三版的意思，要注意，第二版跟第三版有一些語法上的差異
+syntax = "proto3";
+
+package example;
+
+// 定義一個 EchoServer
+service EchoServer {
+    rpc Echo (EchoRequest) returns(EchoResponse){}
+}
+
+// 定義了 Echo Server EchoRequest
+message EchoRequest {
+    string message = 1;
+}
+
+// 定義了 EchoResponse
+// 多回傳一個叫做unixtime
+message EchoResponse {
+    string message = 1;
+    int64 unixtime =2;
+}

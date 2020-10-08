@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
+	"io"
 	"log"
 	pb "mygrpc/echospec"
 	"net"
@@ -42,6 +44,34 @@ func (s *Server) GetUserInfo(c context.Context, req *pb.UserRequest) (*pb.UserRe
 
 	log.Printf("req : %v\n", req)
 	return nil, errors.New("user not found")
+}
+
+func (s *Server) GetUserStreamInfo(stream pb.UserService_GetUserStreamInfoServer) error {
+	// 開一個for 一直收或是發, 直到我們自己想離開為止
+	for {
+		// 透過Recv(), 從stream收取cleint打來的資料
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+
+		if err != nil {
+			log.Fatal(err)
+			return err
+		}
+
+		if user, ok := users[req.GetID()]; ok {
+			// server主動送回給client
+			err = stream.Send(&user)
+			if err != nil {
+				log.Fatal(err)
+				return err
+			}
+		} else {
+			log.Printf("req : %v\n", req)
+			return fmt.Errorf("user not found: %d\n", req.GetID())
+		}
+	}
 }
 
 func main() {

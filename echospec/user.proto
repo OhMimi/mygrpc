@@ -7,6 +7,8 @@ package example;
 service UserService {
     // RPC方法, 透過UserID 取得用戶資料, 並返回UserName、Age
     rpc GetUserInfo (UserRequest) returns (UserResponse);
+    // stream方式
+    rpc GetUserStreamInfo (stream UserRequest) returns (stream UserResponse);
 }
 
 // 客戶端請求的格式

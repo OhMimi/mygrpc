@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+// Unary RPC : 客戶端發出一個請求到服務端, 服務端就回應一次
+package example;
+
+// 定義 UserService 服務
+service UserService {
+    // RPC方法, 透過UserID 取得用戶資料, 並返回UserName、Age
+    rpc GetUserInfo (UserRequest) returns (UserResponse);
+}
+
+// 客戶端請求的格式
+message UserRequest{
+    int32 ID = 1;
+}
+
+// 服務端返回的格式
+message UserResponse{
+    string name = 1;
+    int32 age = 2;
+}
